@@ -1,0 +1,48 @@
+{
+  "version": "0.1.0",
+  "agent": {
+    "skipBootstrap": true
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "workspace"
+    }
+  },
+  "skills": {
+    "load": {
+      "extraDirs": [
+        "skills"
+      ]
+    },
+    "entries": {
+      "life-concierge": {
+        "enabled": true,
+        "env": {
+          "MEMORY_PATH": "backend/memory_store.json"
+        }
+      },
+      "local-discovery": {
+        "enabled": true,
+        "env": {
+          "MOCK_BACKEND_URL": "http://localhost:8000"
+        }
+      },
+      "route-planner": {
+        "enabled": true,
+        "env": {
+          "MOCK_BACKEND_URL": "http://localhost:8000"
+        }
+      },
+      "restaurant-queue": {
+        "enabled": true,
+        "env": {
+          "MOCK_BACKEND_URL": "http://localhost:8000"
+        }
+      }
+    }
+  },
+  "runtime": {
+    "memory_path": "backend/memory_store.json",
+    "heartbeat_cron_default": ""
+  }
+}
