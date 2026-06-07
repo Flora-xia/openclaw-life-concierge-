@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenClaw Web Chat</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --text: #202124;
+      --muted: #687076;
+      --line: #d9ded8;
+      --user: #204d42;
+      --agent: #eef4f1;
+      --accent: #2f6f5e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(880px, 100%);
+      height: 100vh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: var(--panel);
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+    }
+
+    header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .status {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #messages {
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      max-width: min(680px, 86%);
+      padding: 11px 13px;
+      border-radius: 8px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 15px;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      color: #fff;
+      background: var(--user);
+    }
+
+    .message.agent {
+      align-self: flex-start;
+      background: var(--agent);
+      border: 1px solid #dbe6e1;
+    }
+
+    .message.error {
+      align-self: flex-start;
+      background: #fff2f1;
+      border: 1px solid #f0c8c3;
+      color: #7d241d;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 14px;
+      border-top: 1px solid var(--line);
+      background: #fbfbf9;
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+    }
+
+    input:focus {
+      outline: 2px solid rgba(47, 111, 94, 0.22);
+      border-color: var(--accent);
+    }
+
+    button {
+      min-width: 76px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--accent);
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        border: 0;
+      }
+
+      #messages {
+        padding: 14px;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>OpenClaw Web Chat</h1>
+      <div class="status" id="status">Ready</div>
+    </header>
+
+    <section id="messages" aria-live="polite"></section>
+
+    <form id="chat-form">
+      <input id="message-input" name="message" autocomplete="off" placeholder="输入消息，按 Enter 发送" required>
+      <button id="send-button" type="submit">发送</button>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("message-input");
+    const messages = document.getElementById("messages");
+    const statusText = document.getElementById("status");
+    const sendButton = document.getElementById("send-button");
+
+    const sessionId = getSessionId();
+
+    function getSessionId() {
+      const key = "openclaw_web_chat_session_id";
+      const existing = window.localStorage.getItem(key);
+
+      if (existing) {
+        return existing;
+      }
+
+      const next = `web_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      window.localStorage.setItem(key, next);
+      return next;
+    }
+
+    function addMessage(role, text) {
+      const element = document.createElement("div");
+      element.className = `message ${role}`;
+      element.textContent = text;
+      messages.appendChild(element);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function getAgentText(payload) {
+      if (!payload) {
+        return "没有收到有效响应。";
+      }
+
+      if (payload.success === false) {
+        return payload.error || payload.data && payload.data.error || "请求失败。";
+      }
+
+      const data = payload.data || {};
+      return data.response || data.error || "已收到响应，但没有可显示的文本。";
+    }
+
+    async function sendMessage(text) {
+      statusText.textContent = "Sending...";
+      sendButton.disabled = true;
+      input.disabled = true;
+
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({
+            input: {
+              current_input: text,
+              session_id: sessionId,
+            },
+          }),
+        });
+
+        const payload = await response.json();
+        addMessage(payload && payload.success === false ? "error" : "agent", getAgentText(payload));
+        statusText.textContent = response.ok ? "Ready" : `HTTP ${response.status}`;
+      } catch (error) {
+        addMessage("error", error && error.message ? error.message : "网络请求失败。");
+        statusText.textContent = "Request failed";
+      } finally {
+        sendButton.disabled = false;
+        input.disabled = false;
+        input.focus();
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const text = input.value.trim();
+      if (!text) {
+        return;
+      }
+
+      addMessage("user", text);
+      input.value = "";
+      sendMessage(text);
+    });
+  </script>
+</body>
+</html>
