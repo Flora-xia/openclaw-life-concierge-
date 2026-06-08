@@ -11,6 +11,27 @@ restaurant-queue：餐厅排队监控与出发建议。
 
 完成 Memory、Heartbeat、Skill、Runtime、Mock Backend 与 Web Chat 的整体闭环，实现了一个具备长期陪伴能力、主动协同能力和本地生活服务整合能力的 Agent 原型。
 
+# 在线体验 浏览器访问
+
+http://8.216.57.202:3100/
+
+# 演示示例
+
+## 1. 用户请求推荐安静咖啡馆
+<img width="680" height="362" alt="06409bc827abb7e9cd7ed9f5eca34fd9" src="https://github.com/user-attachments/assets/a8125d06-8af4-4404-ba60-e92d020c7a9f" />
+
+## 2. 查看路线和出行方案
+<img width="684" height="376" alt="aa55f22cbb4b19cf93e6cc68c74c4291" src="https://github.com/user-attachments/assets/9fd21024-3c3c-48eb-8346-1401b844370f" />
+
+## 3. 自动规划下一段行程
+<img width="667" height="518" alt="ef85692f12d174222e3b96b6f9069ef1" src="https://github.com/user-attachments/assets/0b71c565-63dc-488a-8e1e-3b1d4c92a9bf" />
+
+## 4. 长期记忆与上下文承接
+<img width="644" height="469" alt="cc55a8d099e7d8e2ddfddde51a95029d" src="https://github.com/user-attachments/assets/572e5b3b-9f65-448e-b1cb-1156ce93ad5a" />
+
+
+
+
 ## 1. 项目概述
 
 ### 1.1 项目名称
@@ -268,7 +289,7 @@ restaurant-queue 提供排队人数、状态、建议出发时间和提示，支
 - 增加单元测试、集成测试和 CI。
 - 统一 mock backend 与 JS Skill 的数据访问方式。
 
-  ### 浏览器访问
 
-  http://8.216.57.202:3100/
+  
+  
 
