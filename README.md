@@ -11,9 +11,6 @@ restaurant-queue：餐厅排队监控与出发建议。
 
 完成 Memory、Heartbeat、Skill、Runtime、Mock Backend 与 Web Chat 的整体闭环，实现了一个具备长期陪伴能力、主动协同能力和本地生活服务整合能力的 Agent 原型。
 
-# 在线体验 
-
-http://8.216.57.202:3100/
 
 # 演示示例
 
