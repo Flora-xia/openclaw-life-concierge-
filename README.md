@@ -20,7 +20,7 @@ restaurant-queue：餐厅排队监控与出发建议。
 ## 2. 查看路线和出行方案
 <img width="684" height="376" alt="aa55f22cbb4b19cf93e6cc68c74c4291" src="https://github.com/user-attachments/assets/9fd21024-3c3c-48eb-8346-1401b844370f" />
 
-## 3. 自动规划下一段行程
+## 3. 多段式动态行程规划
 <img width="667" height="518" alt="ef85692f12d174222e3b96b6f9069ef1" src="https://github.com/user-attachments/assets/0b71c565-63dc-488a-8e1e-3b1d4c92a9bf" />
 
 ## 4. 长期记忆与上下文承接
