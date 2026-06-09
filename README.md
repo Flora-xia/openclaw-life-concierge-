@@ -26,6 +26,8 @@ restaurant-queue：餐厅排队监控与出发建议。
 ## 4. 长期记忆与上下文承接
 <img width="644" height="469" alt="cc55a8d099e7d8e2ddfddde51a95029d" src="https://github.com/user-attachments/assets/572e5b3b-9f65-448e-b1cb-1156ce93ad5a" />
 
+注：当前在线演示主要展示 Memory、多轮承接、本地生活推荐、路线规划与行程规划能力
+盲盒探索机制与 Heartbeat 主动协同机制已完成架构设计并集成至 Runtime。
 
 
 
